@@ -1,8 +1,19 @@
 import { ShieldCheck, Sparkles } from "lucide-react";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import AnimatedNumber from "./AnimatedNumber.jsx";
+import ProfileSwitcher from "./ProfileSwitcher.jsx";
 
-export default function TopBar({ themeId, onThemeChange, completion, reduceMotion }) {
+export default function TopBar({
+  themeId,
+  onThemeChange,
+  completion,
+  reduceMotion,
+  profiles,
+  activeProfileId,
+  onSwitchProfile,
+  onAddProfile,
+  onRemoveProfile,
+}) {
   return (
     <header className="top-bar">
       <div className="brand">
@@ -16,6 +27,13 @@ export default function TopBar({ themeId, onThemeChange, completion, reduceMotio
       </div>
 
       <div className="top-actions">
+        <ProfileSwitcher
+          profiles={profiles}
+          activeProfileId={activeProfileId}
+          onSwitch={onSwitchProfile}
+          onAdd={onAddProfile}
+          onRemove={onRemoveProfile}
+        />
         <span className="privacy-chip">
           <ShieldCheck size={16} aria-hidden="true" />
           本地计算
