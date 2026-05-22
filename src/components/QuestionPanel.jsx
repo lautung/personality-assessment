@@ -79,7 +79,7 @@ export default function QuestionPanel({
           上一题
         </button>
 
-        <span className="keyboard-hint">按 1 到 5 快速选择</span>
+        <span className="keyboard-hint">选择后自动进入下一题，按 1 到 5 快速选择</span>
 
         {isLast ? (
           <button type="button" className="primary-button" onClick={onResult} disabled={!completion.isComplete}>

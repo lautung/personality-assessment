@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import TopBar from "./components/TopBar.jsx";
 import ProgressRail from "./components/ProgressRail.jsx";
 import QuestionPanel from "./components/QuestionPanel.jsx";
@@ -22,6 +22,7 @@ const storageKey = "personality-assessment-theme";
 const profileStorageKey = "personality-assessment-profiles-v1";
 const legacyAnswerStorageKey = "personality-assessment-answers";
 const legacyIndexStorageKey = "personality-assessment-current-index";
+const autoAdvanceDelay = 450;
 
 function getInitialTheme() {
   const stored = window.localStorage.getItem(storageKey);
@@ -77,6 +78,7 @@ export default function App() {
   const [themeId, setThemeId] = useState(getInitialTheme);
   const [view, setView] = useState(initialAppState.view);
   const [motionDirection, setMotionDirection] = useState("forward");
+  const autoAdvanceTimerRef = useRef(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const activeProfile =
     profilesState.profiles.find((profile) => profile.id === profilesState.activeProfileId) ?? profilesState.profiles[0];
@@ -99,30 +101,22 @@ export default function App() {
   }, [profilesState]);
 
   useEffect(() => {
+    return () => clearAutoAdvanceTimer();
+  }, []);
+
+  useEffect(() => {
     function handleKeyDown(event) {
       if (view !== "assessment") return;
       if (event.altKey || event.ctrlKey || event.metaKey) return;
       const value = Number(event.key);
       if (value >= 1 && value <= 5) {
-        setProfilesState((current) =>
-          updateActiveProfile(current, {
-            answers: { ...activeProfile.answers, [currentQuestion.id]: value },
-          }),
-        );
+        handleAnswer(currentQuestion.id, value);
       }
       if (event.key === "ArrowLeft" && currentQuestionIndex > 0) {
-        setMotionDirection("backward");
-        setProfilesState((current) =>
-          updateActiveProfile(current, { currentQuestionIndex: Math.max(0, currentQuestionIndex - 1) }),
-        );
+        handlePrevious();
       }
       if (event.key === "ArrowRight" && answers[currentQuestion.id] && currentQuestionIndex < questions.length - 1) {
-        setMotionDirection("forward");
-        setProfilesState((current) =>
-          updateActiveProfile(current, {
-            currentQuestionIndex: Math.min(questions.length - 1, currentQuestionIndex + 1),
-          }),
-        );
+        handleNext();
       }
     }
 
@@ -130,19 +124,56 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeProfile.answers, answers, currentQuestion, currentQuestionIndex, view]);
 
+  function clearAutoAdvanceTimer() {
+    if (!autoAdvanceTimerRef.current) return;
+    window.clearTimeout(autoAdvanceTimerRef.current);
+    autoAdvanceTimerRef.current = null;
+  }
+
+  function scheduleAutoAdvance(questionId, questionIndex) {
+    clearAutoAdvanceTimer();
+    if (view !== "assessment") return;
+    if (questionIndex >= questions.length - 1) return;
+    if (questions[questionIndex]?.id !== questionId) return;
+
+    autoAdvanceTimerRef.current = window.setTimeout(() => {
+      autoAdvanceTimerRef.current = null;
+      setMotionDirection("forward");
+      setProfilesState((current) => {
+        const currentProfile =
+          current.profiles.find((profile) => profile.id === current.activeProfileId) ?? current.profiles[0];
+        const stillOnSameQuestion = currentProfile.currentQuestionIndex === questionIndex;
+        const currentQuestionId = questions[currentProfile.currentQuestionIndex]?.id;
+        const hasCurrentAnswer = Boolean(currentProfile.answers[questionId]);
+
+        if (!stillOnSameQuestion || currentQuestionId !== questionId || !hasCurrentAnswer) return current;
+
+        return updateActiveProfile(current, {
+          currentQuestionIndex: Math.min(questions.length - 1, questionIndex + 1),
+        });
+      });
+    }, autoAdvanceDelay);
+  }
+
   function handleThemeChange(nextThemeId) {
     setThemeId(nextThemeId);
   }
 
   function handleAnswer(questionId, value) {
+    const questionIndex = currentQuestionIndex;
     setProfilesState((current) =>
       updateActiveProfile(current, {
-        answers: { ...activeProfile.answers, [questionId]: value },
+        answers: {
+          ...(current.profiles.find((profile) => profile.id === current.activeProfileId) ?? current.profiles[0]).answers,
+          [questionId]: value,
+        },
       }),
     );
+    scheduleAutoAdvance(questionId, questionIndex);
   }
 
   function handlePrevious() {
+    clearAutoAdvanceTimer();
     setMotionDirection("backward");
     setProfilesState((current) =>
       updateActiveProfile(current, { currentQuestionIndex: Math.max(0, currentQuestionIndex - 1) }),
@@ -150,6 +181,7 @@ export default function App() {
   }
 
   function handleNext() {
+    clearAutoAdvanceTimer();
     if (!answers[currentQuestion.id]) return;
     setMotionDirection("forward");
     setProfilesState((current) =>
@@ -158,6 +190,7 @@ export default function App() {
   }
 
   function handleJump(index) {
+    clearAutoAdvanceTimer();
     const firstUnansweredIndex = getFirstUnansweredIndex(answers);
     const maxReachableIndex = completion.isComplete ? questions.length - 1 : firstUnansweredIndex;
     const nextIndex = Math.min(Math.max(index, 0), maxReachableIndex);
@@ -167,6 +200,7 @@ export default function App() {
   }
 
   function handleResult() {
+    clearAutoAdvanceTimer();
     if (!completion.isComplete) {
       setMotionDirection("jump");
       setProfilesState((current) =>
@@ -180,6 +214,7 @@ export default function App() {
   }
 
   function handleReset() {
+    clearAutoAdvanceTimer();
     setMotionDirection("jump");
     setProfilesState((current) => updateActiveProfile(current, { answers: {}, currentQuestionIndex: 0, hasSeenIntro: true }));
     setView("assessment");
@@ -187,12 +222,14 @@ export default function App() {
   }
 
   function handleStart(profileName) {
+    clearAutoAdvanceTimer();
     setProfilesState((current) => updateActiveProfile(current, { name: profileName, hasSeenIntro: true }));
     setView("assessment");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleSwitchProfile(profileId) {
+    clearAutoAdvanceTimer();
     const nextState = setActiveProfile(profilesState, profileId);
     const nextProfile = nextState.profiles.find((profile) => profile.id === nextState.activeProfileId) ?? nextState.profiles[0];
     setProfilesState(nextState);
@@ -202,6 +239,7 @@ export default function App() {
   }
 
   function handleAddProfile(name) {
+    clearAutoAdvanceTimer();
     const nextState = addProfile(profilesState, name);
     setProfilesState(nextState);
     setMotionDirection("jump");
@@ -210,6 +248,7 @@ export default function App() {
   }
 
   function handleRemoveProfile(profileId) {
+    clearAutoAdvanceTimer();
     const nextState = removeProfile(profilesState, profileId);
     const nextProfile = nextState.profiles.find((profile) => profile.id === nextState.activeProfileId) ?? nextState.profiles[0];
     setProfilesState(nextState);
