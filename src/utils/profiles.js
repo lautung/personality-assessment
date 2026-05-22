@@ -1,7 +1,7 @@
 import { questions } from "../data/assessment.js";
 
 const validQuestionIds = new Set(questions.map((question) => question.id));
-const defaultProfileName = "我的档案";
+export const defaultProfileName = "我的档案";
 
 function createProfileId() {
   return `profile-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;

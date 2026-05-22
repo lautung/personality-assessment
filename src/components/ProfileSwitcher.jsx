@@ -4,8 +4,7 @@ export default function ProfileSwitcher({ profiles, activeProfileId, onSwitch, o
   const activeProfile = profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0];
 
   function handleAdd() {
-    const name = window.prompt("输入本地用户名称", `用户 ${profiles.length + 1}`);
-    if (name !== null) onAdd(name);
+    onAdd();
   }
 
   return (

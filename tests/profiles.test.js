@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  addProfile,
   createProfile,
   createProfilesState,
   normalizeProfilesState,
@@ -46,6 +47,26 @@ describe("profile storage helpers", () => {
     assert.deepEqual(updated.profiles[0].answers, {});
     assert.deepEqual(updated.profiles[1].answers, { q1: 4 });
     assert.equal(updated.profiles[1].currentQuestionIndex, 1);
+  });
+
+  it("trims profile names when updating the active profile", () => {
+    const state = normalizeProfilesState({
+      activeProfileId: "p1",
+      profiles: [createProfile({ id: "p1", name: "A" })],
+    });
+    const updated = updateActiveProfile(state, { name: "  林一  " });
+
+    assert.equal(updated.profiles[0].name, "林一");
+  });
+
+  it("adds unnamed profiles as guided draft profiles", () => {
+    const state = createProfilesState();
+    const updated = addProfile(state);
+
+    assert.equal(updated.profiles.length, 2);
+    assert.equal(updated.profiles[1].name, "我的档案");
+    assert.equal(updated.profiles[1].hasSeenIntro, false);
+    assert.equal(updated.activeProfileId, updated.profiles[1].id);
   });
 
   it("keeps one profile when removing the active profile", () => {
