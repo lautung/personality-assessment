@@ -61,14 +61,21 @@ function getInitialProfilesState() {
   });
 }
 
+function getInitialAppState() {
+  const profilesState = getInitialProfilesState();
+  const profile = profilesState.profiles.find((item) => item.id === profilesState.activeProfileId) ?? profilesState.profiles[0];
+
+  return {
+    profilesState,
+    view: profile.hasSeenIntro ? "assessment" : "intro",
+  };
+}
+
 export default function App() {
-  const [profilesState, setProfilesState] = useState(getInitialProfilesState);
+  const [initialAppState] = useState(getInitialAppState);
+  const [profilesState, setProfilesState] = useState(initialAppState.profilesState);
   const [themeId, setThemeId] = useState(getInitialTheme);
-  const [view, setView] = useState(() => {
-    const initialState = getInitialProfilesState();
-    const profile = initialState.profiles.find((item) => item.id === initialState.activeProfileId) ?? initialState.profiles[0];
-    return profile.hasSeenIntro ? "assessment" : "intro";
-  });
+  const [view, setView] = useState(initialAppState.view);
   const [motionDirection, setMotionDirection] = useState("forward");
   const prefersReducedMotion = usePrefersReducedMotion();
   const activeProfile =
@@ -179,8 +186,8 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function handleStart() {
-    setProfilesState((current) => updateActiveProfile(current, { hasSeenIntro: true }));
+  function handleStart(profileName) {
+    setProfilesState((current) => updateActiveProfile(current, { name: profileName, hasSeenIntro: true }));
     setView("assessment");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
