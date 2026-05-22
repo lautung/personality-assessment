@@ -1,0 +1,80 @@
+export const traitOrder = ["openness", "discipline", "social", "empathy", "resilience"];
+
+export const traits = {
+  openness: {
+    name: "开放探索",
+    short: "探索",
+    description: "面对新想法、未知领域和变化时的好奇度与接受度。",
+    insight: "这一维度关注你的好奇心、创新意识与对未知的探索倾向。",
+    high: "你容易从变化和新信息中获得能量，适合保留探索空间，让灵感变成可执行的小实验。",
+    low: "你更重视熟悉和确定性，可以用低风险尝试拓宽选择，例如每周接触一个新观点或新方法。",
+    colorVar: "--trait-openness",
+  },
+  discipline: {
+    name: "稳定执行",
+    short: "执行",
+    description: "组织任务、保持节奏、兑现计划的倾向。",
+    insight: "这一维度关注你的计划感、自我管理和持续推进能力。",
+    high: "你擅长把目标拆成步骤，适合承担需要持续推进的任务，同时留意不要让计划压缩恢复时间。",
+    low: "你可能更依赖情境和兴趣驱动，可以用更短的任务清单、固定提醒和可见进度降低启动成本。",
+    colorVar: "--trait-discipline",
+  },
+  social: {
+    name: "社交能量",
+    short: "社交",
+    description: "从互动、表达和外部反馈中获得能量的程度。",
+    insight: "这一维度关注你在交流、表达和群体互动中的能量变化。",
+    high: "你通常在交流中更快进入状态，适合用讨论、演示或协作来激活想法。",
+    low: "你可能更需要独处来恢复和思考，适合提前安排安静时间，并用书面方式表达复杂观点。",
+    colorVar: "--trait-social",
+  },
+  empathy: {
+    name: "协作同理",
+    short: "同理",
+    description: "理解他人处境、协调关系和维护合作氛围的倾向。",
+    insight: "这一维度关注你如何感知他人需求、处理冲突和维持合作。",
+    high: "你容易关注他人的感受和合作体验，适合在关系中同时练习清晰边界和直接表达。",
+    low: "你可能更看重效率和原则，可以在关键沟通前主动确认对方关切，减少误解成本。",
+    colorVar: "--trait-empathy",
+  },
+  resilience: {
+    name: "情绪韧性",
+    short: "韧性",
+    description: "在压力、不确定和挫折中保持稳定与恢复的能力。",
+    insight: "这一维度关注你面对压力时的稳定度、恢复速度和调节能力。",
+    high: "你面对压力时相对稳定，适合承担节奏变化较大的事务，也要持续维护睡眠和休息。",
+    low: "你对压力信号较敏感，可以把恢复机制前置，例如暂停、记录触发点、寻求支持或拆小任务。",
+    colorVar: "--trait-resilience",
+  },
+};
+
+export const questions = [
+  { id: "q1", text: "我愿意尝试不熟悉的方法，即使它一开始不够确定。", trait: "openness", reverse: false },
+  { id: "q2", text: "相比探索新选择，我更倾向于沿用已经验证过的做法。", trait: "openness", reverse: true },
+  { id: "q3", text: "遇到复杂问题时，我会主动寻找不同角度的解释。", trait: "openness", reverse: false },
+  { id: "q4", text: "如果没有明确收益，我通常不会花时间接触新领域。", trait: "openness", reverse: true },
+  { id: "q5", text: "我会把重要事情拆成步骤，并持续跟进完成情况。", trait: "discipline", reverse: false },
+  { id: "q6", text: "我经常到最后一刻才开始处理重要任务。", trait: "discipline", reverse: true },
+  { id: "q7", text: "即使没有外部监督，我也能保持基本节奏。", trait: "discipline", reverse: false },
+  { id: "q8", text: "计划变化时，我很容易失去继续推进的动力。", trait: "discipline", reverse: true },
+  { id: "q9", text: "和别人交流后，我通常会更有精神。", trait: "social", reverse: false },
+  { id: "q10", text: "在多人场合中，我常常希望尽快回到安静环境。", trait: "social", reverse: true },
+  { id: "q11", text: "我愿意主动表达自己的想法，并推动讨论继续。", trait: "social", reverse: false },
+  { id: "q12", text: "需要频繁社交的日程会让我明显消耗。", trait: "social", reverse: true },
+  { id: "q13", text: "做决定时，我会认真考虑它对他人的影响。", trait: "empathy", reverse: false },
+  { id: "q14", text: "当目标明确时，我不太会被他人的感受影响。", trait: "empathy", reverse: true },
+  { id: "q15", text: "冲突出现时，我会尝试理解双方真正关心的问题。", trait: "empathy", reverse: false },
+  { id: "q16", text: "我更喜欢直接指出问题，而不是照顾表达方式。", trait: "empathy", reverse: true },
+  { id: "q17", text: "压力增加时，我通常还能保持相对清晰的判断。", trait: "resilience", reverse: false },
+  { id: "q18", text: "小挫折有时会明显影响我一整天的状态。", trait: "resilience", reverse: true },
+  { id: "q19", text: "遇到不顺利时，我能较快恢复并重新安排下一步。", trait: "resilience", reverse: false },
+  { id: "q20", text: "面对不确定情况，我容易反复担心最坏结果。", trait: "resilience", reverse: true },
+];
+
+export const answerOptions = [
+  { value: 1, label: "非常不符合" },
+  { value: 2, label: "不太符合" },
+  { value: 3, label: "一般" },
+  { value: 4, label: "比较符合" },
+  { value: 5, label: "非常符合" },
+];
