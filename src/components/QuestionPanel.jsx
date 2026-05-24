@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { ArrowLeft, ArrowRight, Bookmark, Lock } from "lucide-react";
 import { answerOptions, questions, traits } from "../data/assessment.js";
 
@@ -17,6 +18,31 @@ export default function QuestionPanel({
   const selected = Boolean(answer);
   const isLast = currentQuestionIndex === questions.length - 1;
   const stageClass = `question-stage question-stage-${motionDirection}`;
+  const optionRefs = useRef([]);
+
+  function handleOptionKeyDown(event, index) {
+    const keyOffsets = {
+      ArrowRight: 1,
+      ArrowDown: 1,
+      ArrowLeft: -1,
+      ArrowUp: -1,
+    };
+    const selectedIndex = answerOptions.findIndex((option) => option.value === answer);
+    const currentIndex = selectedIndex === -1 ? index : selectedIndex;
+    let nextIndex = null;
+
+    if (event.key in keyOffsets) {
+      nextIndex = (currentIndex + keyOffsets[event.key] + answerOptions.length) % answerOptions.length;
+    }
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = answerOptions.length - 1;
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    const nextOption = answerOptions[nextIndex];
+    onAnswer(question.id, nextOption.value);
+    window.requestAnimationFrame(() => optionRefs.current[nextIndex]?.focus());
+  }
 
   return (
     <section className="question-panel" aria-label="人格评估题目">
@@ -29,7 +55,15 @@ export default function QuestionPanel({
             </strong>
           </div>
           <div className="mini-progress">
-            <span style={{ width: `${completion.percent}%` }} />
+            <div
+              role="progressbar"
+              aria-label={`已完成 ${completion.answeredCount} / ${completion.totalCount} 题`}
+              aria-valuemin={0}
+              aria-valuemax={completion.totalCount}
+              aria-valuenow={completion.answeredCount}
+            >
+              <span style={{ width: `${completion.percent}%` }} />
+            </div>
           </div>
         </div>
 
@@ -53,7 +87,11 @@ export default function QuestionPanel({
                 aria-checked={isSelected}
                 tabIndex={isSelected || (!answer && index === 0) ? 0 : -1}
                 style={{ "--option-index": index }}
+                ref={(node) => {
+                  optionRefs.current[index] = node;
+                }}
                 onClick={() => onAnswer(question.id, option.value)}
+                onKeyDown={(event) => handleOptionKeyDown(event, index)}
               >
                 <span>{option.value}</span>
                 <strong>{option.label}</strong>
@@ -79,7 +117,7 @@ export default function QuestionPanel({
           上一题
         </button>
 
-        <span className="keyboard-hint">选择后自动进入下一题，按 1 到 5 快速选择</span>
+        <span className="keyboard-hint">选中后可修改，按 1 到 5 快速选择，方向键切换选项</span>
 
         {isLast ? (
           <button type="button" className="primary-button" onClick={onResult} disabled={!completion.isComplete}>

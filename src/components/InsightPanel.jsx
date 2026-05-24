@@ -6,10 +6,7 @@ import RadarChart from "./RadarChart.jsx";
 export default function InsightPanel({ scores, currentQuestionIndex, completion, reduceMotion }) {
   const currentQuestion = questions[currentQuestionIndex];
   const currentTrait = traits[currentQuestion.trait];
-  const visibleScores = scores.map((score) => ({
-    ...score,
-    score: score.answeredCount < 2 ? 50 : score.score,
-  }));
+  const radarReady = scores.every((score) => score.answeredCount >= 2);
 
   return (
     <aside className="insight-panel" aria-label="实时洞察">
@@ -24,7 +21,15 @@ export default function InsightPanel({ scores, currentQuestionIndex, completion,
       </div>
 
       <div className="radar-wrap">
-        <RadarChart scores={visibleScores} compact />
+        {radarReady ? (
+          <RadarChart scores={scores} compact />
+        ) : (
+          <div className="radar-empty-state" role="status">
+            <BarChart3 size={26} aria-hidden="true" />
+            <strong>雷达图待生成</strong>
+            <span>每个维度至少完成 2 题后展示真实形状</span>
+          </div>
+        )}
       </div>
 
       <div className="score-preview-list">
