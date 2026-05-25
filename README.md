@@ -1,6 +1,6 @@
 # 人格评估网页
 
-一个可部署到 Vercel 的中文单页人格评估网页。测评结果在浏览器本地计算，不需要登录、后端 API 或数据库。
+一个可部署到 Vercel 的中文单页人格评估网页。当前项目已迁移到 Next.js App Router，测评结果在浏览器本地计算，不需要登录、后端 API 或数据库。
 
 ## 功能
 
@@ -30,7 +30,7 @@ npm run dev
 npm run build
 ```
 
-构建产物会输出到 `dist`。
+静态导出产物会输出到 `out`。
 
 ## 测试
 
@@ -59,9 +59,10 @@ npm run format
 
 ## 部署到 Vercel
 
-在 Vercel 导入该仓库后使用默认 Vite 配置：
+在 Vercel 导入该仓库后可直接识别为 Next.js 项目：
 
+- Framework Preset: `Next.js`
 - Build Command: `npm run build`
-- Output Directory: `dist`
+- Output Directory: 保持默认
 
-项目不需要配置环境变量。
+当前配置使用 `output: "export"`，因此会生成纯静态站点，不依赖 Next.js 服务端能力。项目不需要配置环境变量。
