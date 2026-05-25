@@ -285,6 +285,11 @@ a:focus-visible {
   padding: 0 12px;
 }
 
+.top-home-button {
+  gap: 6px;
+  white-space: nowrap;
+}
+
 .profile-switcher {
   display: flex;
   align-items: center;
@@ -1135,9 +1140,15 @@ a:focus-visible {
 }
 
 .keyboard-hint {
+  flex: 1;
+  min-width: 0;
   color: var(--text-soft);
   font-size: 13px;
   font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 
 .insight-panel {
@@ -1252,8 +1263,10 @@ a:focus-visible {
 }
 
 .score-preview {
+  display: grid;
   grid-template-columns: 78px 1fr 56px;
   gap: 10px;
+  align-items: center;
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 900;

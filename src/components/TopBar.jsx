@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Menu, ShieldCheck, Sparkles, X } from "lucide-react";
+import { House, Menu, ShieldCheck, Sparkles, X } from "lucide-react";
 import ThemeSwitcher from "./ThemeSwitcher.jsx";
 import AnimatedNumber from "./AnimatedNumber.jsx";
 import ProfileSwitcher from "./ProfileSwitcher.jsx";
@@ -14,6 +14,7 @@ export default function TopBar({
   onSwitchProfile,
   onAddProfile,
   onRemoveProfile,
+  onBackToIntro,
   assessment,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -39,6 +40,12 @@ export default function TopBar({
 
   const renderUtilityControls = () => (
     <>
+      {onBackToIntro ? (
+        <button type="button" className="secondary-button top-home-button" onClick={onBackToIntro}>
+          <House size={16} aria-hidden="true" />
+          返回主页
+        </button>
+      ) : null}
       <span className="privacy-chip">
         <ShieldCheck size={16} aria-hidden="true" />
         本地计算
