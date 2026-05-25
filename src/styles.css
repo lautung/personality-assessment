@@ -646,6 +646,13 @@ a:focus-visible {
   font-weight: 900;
 }
 
+.intro-panel-note {
+  margin: 16px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .assessment-grid {
   display: grid;
   grid-template-columns: 278px minmax(0, 1fr) 348px;

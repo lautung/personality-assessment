@@ -1,4 +1,11 @@
-import { assessmentList, defaultAssessmentId, getAssessmentDefinition, getQuestionIdsForAssessment } from "../data/assessment.js";
+import {
+  assessmentList,
+  defaultAssessmentId,
+  getAssessmentDefinition,
+  getDefaultQuestionIds,
+  getQuestionIdsForAssessment,
+  normalizeQuestionIds,
+} from "../data/assessment.js";
 
 const validQuestionIdsByAssessment = Object.fromEntries(
   assessmentList.map((assessment) => [assessment.id, getQuestionIdsForAssessment(assessment.id)]),
@@ -21,6 +28,7 @@ function createEmptyAssessmentProgress(assessmentId) {
     answers: {},
     currentQuestionIndex: 0,
     hasSeenIntro: false,
+    questionIds: getDefaultQuestionIds(assessmentId),
     totalQuestions: assessment.questions.length,
   };
 }
@@ -35,17 +43,30 @@ function normalizeAnswers(assessmentId, answers) {
 }
 
 function normalizeQuestionIndex(assessmentId, index) {
-  const { questions } = getAssessmentDefinition(assessmentId);
-  return Number.isInteger(index) && index >= 0 && index < questions.length ? index : 0;
+  const questionCount = getDefaultQuestionIds(assessmentId).length;
+  return Number.isInteger(index) && index >= 0 && index < questionCount ? index : 0;
 }
 
 function normalizeAssessmentProgress(assessmentId, raw = {}) {
   const assessment = getAssessmentDefinition(assessmentId);
+  const questionIds = normalizeQuestionIds(assessmentId, raw.questionIds);
+  const questionCount = questionIds.length;
+  const hasPersistedQuestionIds = Array.isArray(raw.questionIds);
+  const keepsPersistedQuestionIds =
+    hasPersistedQuestionIds &&
+    raw.questionIds.length === questionIds.length &&
+    raw.questionIds.every((questionId, index) => questionIds[index] === questionId);
 
   return {
     answers: normalizeAnswers(assessmentId, raw.answers),
-    currentQuestionIndex: normalizeQuestionIndex(assessmentId, raw.currentQuestionIndex),
+    currentQuestionIndex:
+      hasPersistedQuestionIds && !keepsPersistedQuestionIds
+        ? 0
+        : Number.isInteger(raw.currentQuestionIndex) && raw.currentQuestionIndex >= 0 && raw.currentQuestionIndex < questionCount
+          ? raw.currentQuestionIndex
+          : normalizeQuestionIndex(assessmentId, raw.currentQuestionIndex),
     hasSeenIntro: Boolean(raw.hasSeenIntro),
+    questionIds,
     totalQuestions: assessment.questions.length,
   };
 }

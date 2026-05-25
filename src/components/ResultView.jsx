@@ -57,7 +57,7 @@ export default function ResultView({ assessment, answers, scores, summary, onRes
         <div>
           <span className="section-kicker">本地报告</span>
           <h2>导出结果与回看答案</h2>
-          <p>报告只在当前浏览器生成，不会上传答案。可保存为文本，或在下方展开逐题复盘。</p>
+          <p>报告只在当前浏览器生成，不会上传答案。可保存为文本，或在下方展开本次随机题单的逐题复盘。</p>
           <p className="copy-status" role="status" aria-live="polite">
             {copyStatus}
           </p>

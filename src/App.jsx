@@ -6,7 +6,13 @@ import InsightPanel from "./components/InsightPanel.jsx";
 import ResultView from "./components/ResultView.jsx";
 import IntroView from "./components/IntroView.jsx";
 import ConfirmDialog from "./components/ConfirmDialog.jsx";
-import { assessmentList, defaultAssessmentId, getAssessmentDefinition } from "./data/assessment.js";
+import {
+  assessmentList,
+  buildAssessmentSession,
+  createQuestionSetIds,
+  defaultAssessmentId,
+  getAssessmentDefinition,
+} from "./data/assessment.js";
 import { defaultThemeId, isValidTheme } from "./data/themes.js";
 import { calculateScores, getCompletion, getFirstUnansweredIndex, getSummary } from "./utils/scoring.js";
 import {
@@ -89,8 +95,11 @@ export default function App() {
   const activeProfile =
     profilesState.profiles.find((profile) => profile.id === profilesState.activeProfileId) ?? profilesState.profiles[0];
   const activeAssessmentId = activeProfile.activeAssessmentId ?? defaultAssessmentId;
-  const assessment = getAssessmentDefinition(activeAssessmentId);
   const assessmentState = getProfileAssessmentState(activeProfile, activeAssessmentId);
+  const assessment = useMemo(
+    () => buildAssessmentSession(activeAssessmentId, assessmentState.questionIds),
+    [activeAssessmentId, assessmentState.questionIds],
+  );
   const answers = assessmentState.answers;
   const currentQuestionIndex = assessmentState.currentQuestionIndex;
 
@@ -173,8 +182,8 @@ export default function App() {
         const currentAssessmentId = currentProfile.activeAssessmentId ?? defaultAssessmentId;
         if (currentAssessmentId !== assessment.id) return current;
 
-        const currentAssessment = getAssessmentDefinition(currentAssessmentId);
         const currentProgress = getProfileAssessmentState(currentProfile, currentAssessmentId);
+        const currentAssessment = buildAssessmentSession(currentAssessmentId, currentProgress.questionIds);
         const stillOnSameQuestion = currentProgress.currentQuestionIndex === questionIndex;
         const currentQuestionId = currentAssessment.questions[currentProgress.currentQuestionIndex]?.id;
         const hasCurrentAnswer = Boolean(currentProgress.answers[questionId]);
@@ -270,6 +279,7 @@ export default function App() {
         answers: {},
         currentQuestionIndex: 0,
         hasSeenIntro: true,
+        questionIds: createQuestionSetIds(activeAssessmentId),
       }),
     );
     setView("assessment");
@@ -278,13 +288,20 @@ export default function App() {
 
   function handleStart(profileName) {
     clearAutoAdvanceTimer();
-    setProfilesState((current) =>
-      updateActiveProfileAssessment(
-        updateActiveProfile(current, { name: profileName }),
-        activeAssessmentId,
-        { hasSeenIntro: true },
-      ),
-    );
+    setProfilesState((current) => {
+      const renamedState = updateActiveProfile(current, { name: profileName });
+      const currentProfile =
+        renamedState.profiles.find((profile) => profile.id === renamedState.activeProfileId) ?? renamedState.profiles[0];
+      const currentAssessmentId = currentProfile.activeAssessmentId ?? defaultAssessmentId;
+      const currentProgress = getProfileAssessmentState(currentProfile, currentAssessmentId);
+      const hasAnswers = Object.keys(currentProgress.answers).length > 0;
+
+      return updateActiveProfileAssessment(renamedState, currentAssessmentId, {
+        hasSeenIntro: true,
+        currentQuestionIndex: hasAnswers ? currentProgress.currentQuestionIndex : 0,
+        questionIds: hasAnswers ? currentProgress.questionIds : createQuestionSetIds(currentAssessmentId),
+      });
+    });
     setView("assessment");
     window.scrollTo({ top: 0, behavior: scrollToTop });
   }

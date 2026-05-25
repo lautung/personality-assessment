@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { getDefaultQuestionIds } from "../src/data/assessment.js";
 import {
   addProfile,
   createProfile,
@@ -22,6 +23,7 @@ describe("profile storage helpers", () => {
     assert.equal(state.profiles[0].activeAssessmentId, "five-dim");
     assert.deepEqual(getProfileAssessmentState(state.profiles[0], "five-dim").answers, {});
     assert.deepEqual(getProfileAssessmentState(state.profiles[0], "disc").answers, {});
+    assert.deepEqual(getProfileAssessmentState(state.profiles[0], "five-dim").questionIds, getDefaultQuestionIds("five-dim"));
   });
 
   it("normalizes legacy persisted profiles and removes invalid answers", () => {
@@ -47,6 +49,7 @@ describe("profile storage helpers", () => {
     assert.deepEqual(getProfileAssessmentState(state.profiles[1], "disc").answers, { "disc-q1": 2 });
     assert.equal(getProfileAssessmentState(state.profiles[1], "disc").currentQuestionIndex, 0);
     assert.equal(getProfileAssessmentState(state.profiles[1], "disc").hasSeenIntro, true);
+    assert.deepEqual(getProfileAssessmentState(state.profiles[0], "five-dim").questionIds, getDefaultQuestionIds("five-dim"));
   });
 
   it("updates only the active profile assessment bucket", () => {
@@ -66,6 +69,28 @@ describe("profile storage helpers", () => {
     assert.deepEqual(getProfileAssessmentState(updated.profiles[1], "disc").answers, { "disc-q1": 4 });
     assert.equal(getProfileAssessmentState(updated.profiles[1], "disc").currentQuestionIndex, 1);
     assert.deepEqual(getProfileAssessmentState(updated.profiles[1], "five-dim").answers, {});
+  });
+
+  it("falls back to the default question set when persisted question ids are invalid", () => {
+    const state = normalizeProfilesState({
+      activeProfileId: "p1",
+      profiles: [
+        createProfile({
+          id: "p1",
+          assessments: {
+            disc: {
+              answers: { "disc-q1": 5 },
+              currentQuestionIndex: 12,
+              hasSeenIntro: true,
+              questionIds: ["disc-q1", "disc-q2", "bad-id"],
+            },
+          },
+        }),
+      ],
+    });
+
+    assert.deepEqual(getProfileAssessmentState(state.profiles[0], "disc").questionIds, getDefaultQuestionIds("disc"));
+    assert.equal(getProfileAssessmentState(state.profiles[0], "disc").currentQuestionIndex, 0);
   });
 
   it("trims profile names when updating the active profile", () => {

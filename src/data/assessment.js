@@ -9,6 +9,7 @@ export const answerOptions = [
 ];
 
 const fiveDimTraitOrder = ["openness", "discipline", "social", "empathy", "resilience"];
+const discTraitOrder = ["dominance", "influence", "steadiness", "conscientiousness"];
 
 const fiveDimTraits = {
   openness: {
@@ -58,31 +59,6 @@ const fiveDimTraits = {
   },
 };
 
-const fiveDimQuestions = [
-  { id: "q1", text: "我愿意尝试不熟悉的方法，即使它一开始不够确定。", trait: "openness", reverse: false },
-  { id: "q2", text: "相比探索新选择，我更倾向于沿用已经验证过的做法。", trait: "openness", reverse: true },
-  { id: "q3", text: "遇到复杂问题时，我会主动寻找不同角度的解释。", trait: "openness", reverse: false },
-  { id: "q4", text: "如果没有明确收益，我通常不会花时间接触新领域。", trait: "openness", reverse: true },
-  { id: "q5", text: "我会把重要事情拆成步骤，并持续跟进完成情况。", trait: "discipline", reverse: false },
-  { id: "q6", text: "我经常到最后一刻才开始处理重要任务。", trait: "discipline", reverse: true },
-  { id: "q7", text: "即使没有外部监督，我也能保持基本节奏。", trait: "discipline", reverse: false },
-  { id: "q8", text: "计划变化时，我很容易失去继续推进的动力。", trait: "discipline", reverse: true },
-  { id: "q9", text: "和别人交流后，我通常会更有精神。", trait: "social", reverse: false },
-  { id: "q10", text: "在多人场合中，我常常希望尽快回到安静环境。", trait: "social", reverse: true },
-  { id: "q11", text: "我愿意主动表达自己的想法，并推动讨论继续。", trait: "social", reverse: false },
-  { id: "q12", text: "需要频繁社交的日程会让我明显消耗。", trait: "social", reverse: true },
-  { id: "q13", text: "做决定时，我会认真考虑它对他人的影响。", trait: "empathy", reverse: false },
-  { id: "q14", text: "当目标明确时，我不太会被他人的感受影响。", trait: "empathy", reverse: true },
-  { id: "q15", text: "冲突出现时，我会尝试理解双方真正关心的问题。", trait: "empathy", reverse: false },
-  { id: "q16", text: "我更喜欢直接指出问题，而不是照顾表达方式。", trait: "empathy", reverse: true },
-  { id: "q17", text: "压力增加时，我通常还能保持相对清晰的判断。", trait: "resilience", reverse: false },
-  { id: "q18", text: "小挫折有时会明显影响我一整天的状态。", trait: "resilience", reverse: true },
-  { id: "q19", text: "遇到不顺利时，我能较快恢复并重新安排下一步。", trait: "resilience", reverse: false },
-  { id: "q20", text: "面对不确定情况，我容易反复担心最坏结果。", trait: "resilience", reverse: true },
-];
-
-const discTraitOrder = ["dominance", "influence", "steadiness", "conscientiousness"];
-
 const discTraits = {
   dominance: {
     name: "D 主导型",
@@ -122,7 +98,53 @@ const discTraits = {
   },
 };
 
-const discQuestions = [
+const fiveDimDefaultQuestions = [
+  { id: "q1", text: "我愿意尝试不熟悉的方法，即使它一开始不够确定。", trait: "openness", reverse: false },
+  { id: "q2", text: "相比探索新选择，我更倾向于沿用已经验证过的做法。", trait: "openness", reverse: true },
+  { id: "q3", text: "遇到复杂问题时，我会主动寻找不同角度的解释。", trait: "openness", reverse: false },
+  { id: "q4", text: "如果没有明确收益，我通常不会花时间接触新领域。", trait: "openness", reverse: true },
+  { id: "q5", text: "我会把重要事情拆成步骤，并持续跟进完成情况。", trait: "discipline", reverse: false },
+  { id: "q6", text: "我经常到最后一刻才开始处理重要任务。", trait: "discipline", reverse: true },
+  { id: "q7", text: "即使没有外部监督，我也能保持基本节奏。", trait: "discipline", reverse: false },
+  { id: "q8", text: "计划变化时，我很容易失去继续推进的动力。", trait: "discipline", reverse: true },
+  { id: "q9", text: "和别人交流后，我通常会更有精神。", trait: "social", reverse: false },
+  { id: "q10", text: "在多人场合中，我常常希望尽快回到安静环境。", trait: "social", reverse: true },
+  { id: "q11", text: "我愿意主动表达自己的想法，并推动讨论继续。", trait: "social", reverse: false },
+  { id: "q12", text: "需要频繁社交的日程会让我明显消耗。", trait: "social", reverse: true },
+  { id: "q13", text: "做决定时，我会认真考虑它对他人的影响。", trait: "empathy", reverse: false },
+  { id: "q14", text: "当目标明确时，我不太会被他人的感受影响。", trait: "empathy", reverse: true },
+  { id: "q15", text: "冲突出现时，我会尝试理解双方真正关心的问题。", trait: "empathy", reverse: false },
+  { id: "q16", text: "我更喜欢直接指出问题，而不是照顾表达方式。", trait: "empathy", reverse: true },
+  { id: "q17", text: "压力增加时，我通常还能保持相对清晰的判断。", trait: "resilience", reverse: false },
+  { id: "q18", text: "小挫折有时会明显影响我一整天的状态。", trait: "resilience", reverse: true },
+  { id: "q19", text: "遇到不顺利时，我能较快恢复并重新安排下一步。", trait: "resilience", reverse: false },
+  { id: "q20", text: "面对不确定情况，我容易反复担心最坏结果。", trait: "resilience", reverse: true },
+];
+
+const fiveDimExtraQuestions = [
+  { id: "q21", text: "面对一个全新的主题时，我通常会主动去补充背景知识。", trait: "openness", reverse: false },
+  { id: "q22", text: "如果一件事暂时没有成熟范例，我往往不太愿意先尝试。", trait: "openness", reverse: true },
+  { id: "q23", text: "我会把陌生领域当作扩展视野的机会，而不只是风险。", trait: "openness", reverse: false },
+  { id: "q24", text: "相比研究新方法，我更愿意重复自己已经熟练的路径。", trait: "openness", reverse: true },
+  { id: "q25", text: "我通常会提前安排关键任务的时间和顺序。", trait: "discipline", reverse: false },
+  { id: "q26", text: "只要没有明确截止时间，我很容易把事情一拖再拖。", trait: "discipline", reverse: true },
+  { id: "q27", text: "即使状态一般，我也能按既定步骤把事情推进下去。", trait: "discipline", reverse: false },
+  { id: "q28", text: "只要当天节奏被打乱，我常会连带放弃原来的计划。", trait: "discipline", reverse: true },
+  { id: "q29", text: "在讨论里，我通常愿意先开口把氛围带起来。", trait: "social", reverse: false },
+  { id: "q30", text: "连续几场社交活动之后，我往往需要明显的独处时间。", trait: "social", reverse: true },
+  { id: "q31", text: "需要认识新朋友或新同事时，我通常不太抗拒。", trait: "social", reverse: false },
+  { id: "q32", text: "如果一个活动主要是寒暄互动，我通常不会太期待参加。", trait: "social", reverse: true },
+  { id: "q33", text: "在合作中，我会留意别人没有直接说出口的顾虑。", trait: "empathy", reverse: false },
+  { id: "q34", text: "只要事情能完成，我通常不会太在意过程中谁感受如何。", trait: "empathy", reverse: true },
+  { id: "q35", text: "当别人表达不满时，我会先尝试理解背后的原因。", trait: "empathy", reverse: false },
+  { id: "q36", text: "遇到分歧时，我常会先强调结论，而不是先确认彼此理解。", trait: "empathy", reverse: true },
+  { id: "q37", text: "出现突发状况时，我通常能先稳住自己再处理问题。", trait: "resilience", reverse: false },
+  { id: "q38", text: "一旦事情偏离预期，我常会在脑中反复回想很久。", trait: "resilience", reverse: true },
+  { id: "q39", text: "即使经历一次失误，我也能较快恢复正常节奏。", trait: "resilience", reverse: false },
+  { id: "q40", text: "不确定因素一多，我的注意力就容易被担忧分散。", trait: "resilience", reverse: true },
+];
+
+const discDefaultQuestions = [
   { id: "disc-q1", text: "遇到需要推进结果的局面时，我通常会直接表态并推动下一步。", trait: "dominance", reverse: false },
   { id: "disc-q2", text: "即使方向已经清楚，我也更愿意等别人先做决定。", trait: "dominance", reverse: true },
   { id: "disc-q3", text: "当讨论拖得太久时，我会主动把话题拉回结论。", trait: "dominance", reverse: false },
@@ -141,6 +163,51 @@ const discQuestions = [
   { id: "disc-q16", text: "相比准确无误，我更在意先把事情快速推进。", trait: "conscientiousness", reverse: true },
 ];
 
+const discExtraQuestions = [
+  { id: "disc-q17", text: "一旦判断目标明确，我会更愿意先推进再边走边修正。", trait: "dominance", reverse: false },
+  { id: "disc-q18", text: "即使我知道怎么做，我也常把拍板机会让给别人。", trait: "dominance", reverse: true },
+  { id: "disc-q19", text: "遇到阻力时，我通常会主动要求明确责任和时间点。", trait: "dominance", reverse: false },
+  { id: "disc-q20", text: "出现拉扯时，我更倾向先退一步，避免把场面推得太硬。", trait: "dominance", reverse: true },
+  { id: "disc-q21", text: "我通常能比较自然地把自己的想法讲得有感染力。", trait: "influence", reverse: false },
+  { id: "disc-q22", text: "在不熟悉的人面前，我一般不会主动成为气氛中心。", trait: "influence", reverse: true },
+  { id: "disc-q23", text: "需要争取支持时，我愿意用故事和情绪把人带入情境。", trait: "influence", reverse: false },
+  { id: "disc-q24", text: "相比现场说服别人，我更偏好先整理好文字再表达。", trait: "influence", reverse: true },
+  { id: "disc-q25", text: "只要团队需要，我通常能长期维持稳定而耐心的配合。", trait: "steadiness", reverse: false },
+  { id: "disc-q26", text: "当别人反复改需求时，我通常很难继续平稳配合。", trait: "steadiness", reverse: true },
+  { id: "disc-q27", text: "在合作中，我愿意照顾整体节奏，而不是只追求自己的速度。", trait: "steadiness", reverse: false },
+  { id: "disc-q28", text: "如果流程推进得太慢，我往往会迅速失去继续配合的耐心。", trait: "steadiness", reverse: true },
+  { id: "disc-q29", text: "处理重要任务时，我会先确认标准、边界和例外情况。", trait: "conscientiousness", reverse: false },
+  { id: "disc-q30", text: "只要整体方向没跑偏，细节上的不严密通常不会让我停下来。", trait: "conscientiousness", reverse: true },
+  { id: "disc-q31", text: "我更习惯在行动前先核对关键数据和定义。", trait: "conscientiousness", reverse: false },
+  { id: "disc-q32", text: "赶时间时，我通常愿意先上线或先推进，再回头补检查。", trait: "conscientiousness", reverse: true },
+];
+
+function shuffle(items, random = Math.random) {
+  const list = [...items];
+
+  for (let index = list.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [list[index], list[swapIndex]] = [list[swapIndex], list[index]];
+  }
+
+  return list;
+}
+
+function sample(items, count, random = Math.random) {
+  return shuffle(items, random).slice(0, count);
+}
+
+function buildQuestionIndex(questions) {
+  return new Map(questions.map((question) => [question.id, question]));
+}
+
+function getQuestionCountByTraitFromList(traitOrder, questions) {
+  return traitOrder.reduce((counts, traitKey) => {
+    counts[traitKey] = questions.filter((question) => question.trait === traitKey).length;
+    return counts;
+  }, {});
+}
+
 const assessments = {
   "five-dim": {
     id: "five-dim",
@@ -148,22 +215,27 @@ const assessments = {
     brandSubtitle: "五维自我探索",
     introTitle: "五维人格探索，从一个本地档案开始",
     introDescription:
-      "选择当前用户与评估方法后开始答题。每个用户的答案、进度和结果只保存在这台设备的浏览器中，适合家庭、团队练习或同一设备多人轮流使用。",
+      "选择当前用户与评估方法后开始答题。系统会从更大的题库中随机抽取一组题目，答案、进度和结果只保存在这台设备的浏览器中。",
     introOverviewLabel: "五维概览",
     resultTitle: "你的五维人格画像",
-    resultContext: "本测评每个维度由 4 道题构成，适合做自我探索和复盘；分数接近中段时代表倾向不明显，不建议过度解读。",
+    resultContext:
+      "本测评每个维度会从题库中随机抽取 4 道题，适合做自我探索和复盘；分数接近中段时代表倾向不明显，不建议过度解读。",
     reportTitle: "人格评估报告",
     reportScoresTitle: "五维结果",
     answerReviewTitle: "答案回看",
     estimatedTime: "预计 5-8 分钟",
-    progressSummary: "所有答案仅保存在当前浏览器。",
+    progressSummary: "每次会随机抽取一组题目，所有答案仅保存在当前浏览器。",
     radarLabel: "五维人格雷达图",
     topLabel: "最高维度",
     lowLabel: "可发展维度",
     neutralPatternTitle: "五维观察型",
     traitOrder: fiveDimTraitOrder,
     traits: fiveDimTraits,
-    questions: fiveDimQuestions,
+    questions: fiveDimDefaultQuestions,
+    questionPool: [...fiveDimDefaultQuestions, ...fiveDimExtraQuestions],
+    defaultQuestionIds: fiveDimDefaultQuestions.map((question) => question.id),
+    questionsPerTrait: 4,
+    reverseQuestionsPerTrait: 2,
     summaryPatterns: {
       "openness:discipline": {
         title: "探索落地型",
@@ -264,23 +336,27 @@ const assessments = {
     brandSubtitle: "DISC 行为风格",
     introTitle: "DISC 行为风格，从一个本地档案开始",
     introDescription:
-      "选择当前用户与评估方法后开始答题。DISC 更关注你在沟通、推进、配合和质量控制中的外显行为风格，适合做团队协作和工作复盘参考。",
+      "选择当前用户与评估方法后开始答题。系统会从更大的题库中随机抽取一组题目，DISC 更关注你在沟通、推进、配合和质量控制中的外显行为风格。",
     introOverviewLabel: "DISC 四维概览",
     resultTitle: "你的 DISC 行为风格画像",
     resultContext:
-      "DISC 更关注你在沟通、推进、配合和审慎程度上的常用风格。分数体现当前更常使用的行为方式，不等同于固定人格或临床结论。",
+      "DISC 每个维度会从题库中随机抽取 4 道题，更关注你在沟通、推进、配合和审慎程度上的常用风格。分数体现当前更常使用的行为方式，不等同于固定人格或临床结论。",
     reportTitle: "DISC 行为风格报告",
     reportScoresTitle: "DISC 四维结果",
     answerReviewTitle: "答案回看",
     estimatedTime: "预计 4-6 分钟",
-    progressSummary: "结果只在本地计算，适合自我复盘与团队沟通参考。",
+    progressSummary: "每次会随机抽取一组题目，结果只在本地计算。",
     radarLabel: "DISC 四维雷达图",
     topLabel: "最常用风格",
     lowLabel: "较少使用风格",
     neutralPatternTitle: "DISC 平衡型",
     traitOrder: discTraitOrder,
     traits: discTraits,
-    questions: discQuestions,
+    questions: discDefaultQuestions,
+    questionPool: [...discDefaultQuestions, ...discExtraQuestions],
+    defaultQuestionIds: discDefaultQuestions.map((question) => question.id),
+    questionsPerTrait: 4,
+    reverseQuestionsPerTrait: 2,
     summaryPatterns: {
       "dominance:steadiness": {
         title: "推进突破型",
@@ -313,6 +389,38 @@ const assessments = {
   },
 };
 
+const questionIndexByAssessment = Object.fromEntries(
+  Object.values(assessments).map((assessment) => [assessment.id, buildQuestionIndex(assessment.questionPool)]),
+);
+
+function getExpectedQuestionCount(assessment) {
+  return assessment.questionsPerTrait * assessment.traitOrder.length;
+}
+
+function normalizeQuestionIdsInternal(assessment, questionIds) {
+  if (!Array.isArray(questionIds)) return assessment.defaultQuestionIds;
+
+  const questionIndex = questionIndexByAssessment[assessment.id];
+  const uniqueIds = [...new Set(questionIds)].filter((questionId) => questionIndex.has(questionId));
+
+  if (uniqueIds.length !== getExpectedQuestionCount(assessment)) return assessment.defaultQuestionIds;
+
+  const selectedQuestions = uniqueIds.map((questionId) => questionIndex.get(questionId));
+  const countByTrait = getQuestionCountByTraitFromList(assessment.traitOrder, selectedQuestions);
+  const reverseCountByTrait = assessment.traitOrder.reduce((counts, traitKey) => {
+    counts[traitKey] = selectedQuestions.filter((question) => question.trait === traitKey && question.reverse).length;
+    return counts;
+  }, {});
+
+  const isBalanced = assessment.traitOrder.every(
+    (traitKey) =>
+      countByTrait[traitKey] === assessment.questionsPerTrait &&
+      reverseCountByTrait[traitKey] === assessment.reverseQuestionsPerTrait,
+  );
+
+  return isBalanced ? uniqueIds : assessment.defaultQuestionIds;
+}
+
 export const assessmentList = Object.values(assessments);
 export const assessmentOptions = assessmentList.map((assessment) => ({
   id: assessment.id,
@@ -324,15 +432,51 @@ export function getAssessmentDefinition(assessmentId = defaultAssessmentId) {
   return assessments[assessmentId] ?? assessments[defaultAssessmentId];
 }
 
+export function getDefaultQuestionIds(assessmentId = defaultAssessmentId) {
+  return [...getAssessmentDefinition(assessmentId).defaultQuestionIds];
+}
+
+export function createQuestionSetIds(assessmentId = defaultAssessmentId, random = Math.random) {
+  const assessment = getAssessmentDefinition(assessmentId);
+  const positiveCount = assessment.questionsPerTrait - assessment.reverseQuestionsPerTrait;
+
+  return assessment.traitOrder.flatMap((traitKey) => {
+    const traitQuestions = assessment.questionPool.filter((question) => question.trait === traitKey);
+    const positiveQuestions = traitQuestions.filter((question) => !question.reverse);
+    const reverseQuestions = traitQuestions.filter((question) => question.reverse);
+    const selected = [
+      ...sample(positiveQuestions, positiveCount, random),
+      ...sample(reverseQuestions, assessment.reverseQuestionsPerTrait, random),
+    ];
+
+    return shuffle(selected, random).map((question) => question.id);
+  });
+}
+
+export function normalizeQuestionIds(assessmentId = defaultAssessmentId, questionIds) {
+  return normalizeQuestionIdsInternal(getAssessmentDefinition(assessmentId), questionIds);
+}
+
+export function buildAssessmentSession(assessmentOrId, questionIds) {
+  const baseAssessment =
+    typeof assessmentOrId === "string" ? getAssessmentDefinition(assessmentOrId) : getAssessmentDefinition(assessmentOrId?.id);
+  const normalizedQuestionIds = normalizeQuestionIdsInternal(baseAssessment, questionIds);
+  const questionIndex = questionIndexByAssessment[baseAssessment.id];
+  const questions = normalizedQuestionIds.map((questionId) => questionIndex.get(questionId));
+
+  return {
+    ...baseAssessment,
+    questions,
+    questionIds: normalizedQuestionIds,
+  };
+}
+
 export function getQuestionCountByTrait(assessment) {
-  return assessment.traitOrder.reduce((counts, traitKey) => {
-    counts[traitKey] = assessment.questions.filter((question) => question.trait === traitKey).length;
-    return counts;
-  }, {});
+  return getQuestionCountByTraitFromList(assessment.traitOrder, assessment.questions);
 }
 
 export function getQuestionIdsForAssessment(assessmentId) {
-  return new Set(getAssessmentDefinition(assessmentId).questions.map((question) => question.id));
+  return new Set(getAssessmentDefinition(assessmentId).questionPool.map((question) => question.id));
 }
 
 export { assessments };

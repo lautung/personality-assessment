@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, Lock, Plus, UserRound, UsersRound } from "lucide-react";
+import { buildAssessmentSession } from "../data/assessment.js";
 import { getCompletion } from "../utils/scoring.js";
 import { defaultProfileName, getProfileAssessmentState } from "../utils/profiles.js";
 
@@ -47,7 +48,9 @@ export default function IntroView({
         <div className="method-selector" aria-label="评估方法选择">
           {assessments.map((item) => {
             const selected = item.id === assessment.id;
-            const methodProgress = getCompletion(item, getProfileAssessmentState(activeProfile, item.id).answers);
+            const methodState = getProfileAssessmentState(activeProfile, item.id);
+            const methodAssessment = buildAssessmentSession(item.id, methodState.questionIds);
+            const methodProgress = getCompletion(methodAssessment, methodState.answers);
 
             return (
               <button
@@ -58,7 +61,7 @@ export default function IntroView({
                 aria-pressed={selected}
               >
                 <span>{item.name}</span>
-                <strong>{methodProgress.answeredCount} / {item.questions.length} 题</strong>
+                <strong>{methodProgress.answeredCount} / {methodProgress.totalCount} 题</strong>
               </button>
             );
           })}
@@ -90,7 +93,7 @@ export default function IntroView({
           ) : null}
           <div className="intro-actions">
             <button type="submit" className="primary-button">
-              {hasProgress ? "继续该测评" : "开始测评"}
+              {hasProgress ? "继续该测评" : "开始本次测评"}
               <ArrowRight size={18} aria-hidden="true" />
             </button>
             <button type="button" className="secondary-button" onClick={handleAddProfile}>
@@ -140,6 +143,7 @@ export default function IntroView({
             </span>
           ))}
         </div>
+        <p className="intro-panel-note">每次开始或重新测试时，系统会从当前题库中随机抽取一组题目。</p>
       </div>
     </section>
   );
