@@ -1,11 +1,10 @@
 import { Activity, BarChart3 } from "lucide-react";
-import { questions, traits } from "../data/assessment.js";
 import AnimatedNumber from "./AnimatedNumber.jsx";
 import RadarChart from "./RadarChart.jsx";
 
-export default function InsightPanel({ scores, currentQuestionIndex, completion, reduceMotion }) {
-  const currentQuestion = questions[currentQuestionIndex];
-  const currentTrait = traits[currentQuestion.trait];
+export default function InsightPanel({ assessment, scores, currentQuestionIndex, completion, reduceMotion }) {
+  const currentQuestion = assessment.questions[currentQuestionIndex];
+  const currentTrait = assessment.traits[currentQuestion.trait];
   const radarReady = scores.every((score) => score.answeredCount >= 2);
 
   return (
@@ -22,7 +21,7 @@ export default function InsightPanel({ scores, currentQuestionIndex, completion,
 
       <div className="radar-wrap">
         {radarReady ? (
-          <RadarChart scores={scores} compact />
+          <RadarChart scores={scores} compact ariaLabel={assessment.radarLabel} />
         ) : (
           <div className="radar-empty-state" role="status">
             <BarChart3 size={26} aria-hidden="true" />

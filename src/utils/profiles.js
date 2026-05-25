@@ -1,6 +1,9 @@
-import { questions } from "../data/assessment.js";
+import { assessmentList, defaultAssessmentId, getAssessmentDefinition, getQuestionIdsForAssessment } from "../data/assessment.js";
 
-const validQuestionIds = new Set(questions.map((question) => question.id));
+const validQuestionIdsByAssessment = Object.fromEntries(
+  assessmentList.map((assessment) => [assessment.id, getQuestionIdsForAssessment(assessment.id)]),
+);
+
 export const defaultProfileName = "我的档案";
 
 function createProfileId() {
@@ -12,31 +15,77 @@ function normalizeName(name) {
   return trimmed || defaultProfileName;
 }
 
-function normalizeAnswers(answers) {
+function createEmptyAssessmentProgress(assessmentId) {
+  const assessment = getAssessmentDefinition(assessmentId);
+  return {
+    answers: {},
+    currentQuestionIndex: 0,
+    hasSeenIntro: false,
+    totalQuestions: assessment.questions.length,
+  };
+}
+
+function normalizeAnswers(assessmentId, answers) {
   if (!answers || typeof answers !== "object" || Array.isArray(answers)) return {};
 
+  const validQuestionIds = validQuestionIdsByAssessment[assessmentId] ?? getQuestionIdsForAssessment(assessmentId);
   return Object.fromEntries(
     Object.entries(answers).filter(([questionId, value]) => validQuestionIds.has(questionId) && value >= 1 && value <= 5),
   );
 }
 
-function normalizeQuestionIndex(index) {
+function normalizeQuestionIndex(assessmentId, index) {
+  const { questions } = getAssessmentDefinition(assessmentId);
   return Number.isInteger(index) && index >= 0 && index < questions.length ? index : 0;
+}
+
+function normalizeAssessmentProgress(assessmentId, raw = {}) {
+  const assessment = getAssessmentDefinition(assessmentId);
+
+  return {
+    answers: normalizeAnswers(assessmentId, raw.answers),
+    currentQuestionIndex: normalizeQuestionIndex(assessmentId, raw.currentQuestionIndex),
+    hasSeenIntro: Boolean(raw.hasSeenIntro),
+    totalQuestions: assessment.questions.length,
+  };
+}
+
+function normalizeAssessmentsMap(rawAssessments, legacyProfile = {}) {
+  const source = rawAssessments && typeof rawAssessments === "object" ? rawAssessments : {};
+
+  return Object.fromEntries(
+    assessmentList.map((assessment) => {
+      const legacySource =
+        assessment.id === defaultAssessmentId
+          ? {
+              answers: legacyProfile.answers,
+              currentQuestionIndex: legacyProfile.currentQuestionIndex,
+              hasSeenIntro: legacyProfile.hasSeenIntro,
+            }
+          : undefined;
+
+      return [assessment.id, normalizeAssessmentProgress(assessment.id, source[assessment.id] ?? legacySource)];
+    }),
+  );
 }
 
 export function createProfile({
   id = createProfileId(),
   name = defaultProfileName,
-  answers = {},
-  currentQuestionIndex = 0,
-  hasSeenIntro = false,
+  activeAssessmentId = defaultAssessmentId,
+  assessments,
+  answers,
+  currentQuestionIndex,
+  hasSeenIntro,
 } = {}) {
+  const nextActiveAssessmentId = getAssessmentDefinition(activeAssessmentId).id;
+  const normalizedAssessments = normalizeAssessmentsMap(assessments, { answers, currentQuestionIndex, hasSeenIntro });
+
   return {
     id,
     name: normalizeName(name),
-    answers: normalizeAnswers(answers),
-    currentQuestionIndex: normalizeQuestionIndex(currentQuestionIndex),
-    hasSeenIntro: Boolean(hasSeenIntro),
+    activeAssessmentId: nextActiveAssessmentId,
+    assessments: normalizedAssessments,
   };
 }
 
@@ -59,6 +108,8 @@ export function normalizeProfilesState(raw) {
       createProfile({
         id: profile.id || `profile-${index + 1}`,
         name: profile.name,
+        activeAssessmentId: profile.activeAssessmentId,
+        assessments: profile.assessments,
         answers: profile.answers,
         currentQuestionIndex: profile.currentQuestionIndex,
         hasSeenIntro: profile.hasSeenIntro,
@@ -74,6 +125,11 @@ export function normalizeProfilesState(raw) {
   return { activeProfileId, profiles };
 }
 
+export function getProfileAssessmentState(profile, assessmentId = profile?.activeAssessmentId ?? defaultAssessmentId) {
+  if (!profile) return createEmptyAssessmentProgress(assessmentId);
+  return profile.assessments?.[assessmentId] ?? createEmptyAssessmentProgress(assessmentId);
+}
+
 export function updateActiveProfile(state, patch) {
   return normalizeProfilesState({
     ...state,
@@ -81,10 +137,39 @@ export function updateActiveProfile(state, patch) {
   });
 }
 
+export function updateActiveProfileAssessment(state, assessmentId, patch) {
+  return normalizeProfilesState({
+    ...state,
+    profiles: state.profiles.map((profile) =>
+      profile.id === state.activeProfileId
+        ? {
+            ...profile,
+            assessments: {
+              ...profile.assessments,
+              [assessmentId]: {
+                ...getProfileAssessmentState(profile, assessmentId),
+                ...patch,
+              },
+            },
+          }
+        : profile,
+    ),
+  });
+}
+
 export function setActiveProfile(state, profileId) {
   return normalizeProfilesState({
     ...state,
     activeProfileId: profileId,
+  });
+}
+
+export function setActiveAssessment(state, assessmentId) {
+  return normalizeProfilesState({
+    ...state,
+    profiles: state.profiles.map((profile) =>
+      profile.id === state.activeProfileId ? { ...profile, activeAssessmentId: getAssessmentDefinition(assessmentId).id } : profile,
+    ),
   });
 }
 

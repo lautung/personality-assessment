@@ -1,4 +1,4 @@
-import { answerOptions, questions, traits } from "../data/assessment.js";
+import { answerOptions } from "../data/assessment.js";
 import { getTraitAdvice } from "./scoring.js";
 
 function getAnswerLabel(value) {
@@ -10,8 +10,8 @@ function getScoredValue(question, value) {
   return question.reverse ? 6 - value : value;
 }
 
-export function getAnswerReviewRows(answers) {
-  return questions
+export function getAnswerReviewRows(assessment, answers) {
+  return assessment.questions
     .filter((question) => answers[question.id])
     .map((question, index) => {
       const answerValue = answers[question.id];
@@ -20,7 +20,7 @@ export function getAnswerReviewRows(answers) {
         id: question.id,
         questionText: question.text,
         traitKey: question.trait,
-        traitName: traits[question.trait].name,
+        traitName: assessment.traits[question.trait].name,
         answerValue,
         answerLabel: getAnswerLabel(answerValue),
         reverse: question.reverse,
@@ -29,14 +29,14 @@ export function getAnswerReviewRows(answers) {
     });
 }
 
-export function buildTextReport({ answers, scores, summary }) {
+export function buildTextReport({ assessment, answers, scores, summary }) {
   const scoreLines = scores
     .map(
       (score) =>
         `- ${score.name}: ${score.score} 分（${score.band.label}，${score.confidence.label}）\n  ${getTraitAdvice(score)}`,
     )
     .join("\n");
-  const answerLines = getAnswerReviewRows(answers)
+  const answerLines = getAnswerReviewRows(assessment, answers)
     .map(
       (row) =>
         `${row.number}. [${row.traitName}] ${row.questionText}\n   回答：${row.answerValue} ${row.answerLabel}${
@@ -46,15 +46,18 @@ export function buildTextReport({ answers, scores, summary }) {
     .join("\n");
 
   return [
-    "人格评估报告",
+    assessment.reportTitle,
+    "",
+    "测评方法",
+    assessment.name,
     "",
     "总体摘要",
     summary.text,
     "",
-    "五维结果",
+    assessment.reportScoresTitle,
     scoreLines,
     "",
-    "答案回看",
+    assessment.answerReviewTitle,
     answerLines || "暂无答案。",
     "",
     "边界说明",
@@ -90,6 +93,8 @@ export function downloadTextReport(reportText, filename = "personality-assessmen
   const link = document.createElement("a");
   link.href = url;
   link.download = filename;
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }

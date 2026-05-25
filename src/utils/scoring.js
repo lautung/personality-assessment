@@ -1,5 +1,3 @@
-import { questions, traitOrder, traits } from "../data/assessment.js";
-
 const scoreBands = [
   {
     id: "very-low",
@@ -37,29 +35,6 @@ const scoreBands = [
     tone: "这一倾向非常突出，是当前画像里更容易被他人观察到的部分。",
   },
 ];
-
-const summaryPatterns = {
-  "openness:discipline": {
-    title: "探索落地型",
-    text: "你很容易被新想法和未知领域激发，但稳定执行相对保守。适合把探索拆成更短的验证周期，用小实验把灵感落地。",
-  },
-  "empathy:resilience": {
-    title: "共情边界型",
-    text: "你对他人处境和合作氛围很敏感，但压力恢复需要更多空间。适合在照顾关系的同时提前设定边界和恢复机制。",
-  },
-  "discipline:openness": {
-    title: "秩序拓展型",
-    text: "你擅长持续推进和维持秩序，但面对新方向时可能更谨慎。适合在稳定计划中保留少量探索预算。",
-  },
-  "social:resilience": {
-    title: "表达恢复型",
-    text: "你能从交流中获得能量，但压力恢复可能需要额外照顾。适合把密集社交和安静恢复安排成清晰节奏。",
-  },
-  "resilience:empathy": {
-    title: "稳态直行型",
-    text: "你在压力中相对稳定，但协作同理维度较保守。适合在推进目标时主动确认他人的关切，减少沟通摩擦。",
-  },
-};
 
 function normalizeScore(average) {
   return Math.round(((average - 1) / 4) * 100);
@@ -131,24 +106,24 @@ export function getTraitAdvice(score) {
   return band.tone;
 }
 
-export function getCompletion(answers) {
-  const answeredCount = questions.filter((question) => answers[question.id]).length;
+export function getCompletion(assessment, answers) {
+  const answeredCount = assessment.questions.filter((question) => answers[question.id]).length;
   return {
     answeredCount,
-    totalCount: questions.length,
-    percent: Math.round((answeredCount / questions.length) * 100),
-    isComplete: answeredCount === questions.length,
+    totalCount: assessment.questions.length,
+    percent: Math.round((answeredCount / assessment.questions.length) * 100),
+    isComplete: answeredCount === assessment.questions.length,
   };
 }
 
-export function getFirstUnansweredIndex(answers) {
-  const index = questions.findIndex((question) => !answers[question.id]);
-  return index === -1 ? questions.length - 1 : index;
+export function getFirstUnansweredIndex(assessment, answers) {
+  const index = assessment.questions.findIndex((question) => !answers[question.id]);
+  return index === -1 ? assessment.questions.length - 1 : index;
 }
 
-export function calculateScores(answers, { preview = false } = {}) {
-  return traitOrder.map((traitKey) => {
-    const traitQuestions = questions.filter((question) => question.trait === traitKey);
+export function calculateScores(assessment, answers, { preview = false } = {}) {
+  return assessment.traitOrder.map((traitKey) => {
+    const traitQuestions = assessment.questions.filter((question) => question.trait === traitKey);
     const answeredQuestions = traitQuestions.filter((question) => answers[question.id]);
     const sourceQuestions = preview ? answeredQuestions : traitQuestions;
     const score =
@@ -161,7 +136,8 @@ export function calculateScores(answers, { preview = false } = {}) {
 
     return {
       key: traitKey,
-      ...traits[traitKey],
+      assessmentId: assessment.id,
+      ...assessment.traits[traitKey],
       score,
       answeredCount: answeredQuestions.length,
       totalCount: traitQuestions.length,
@@ -171,25 +147,19 @@ export function calculateScores(answers, { preview = false } = {}) {
   });
 }
 
-export function getSummary(scores) {
+export function getSummary(assessment, scores) {
   const completedScores = scores.filter((score) => typeof score.score === "number");
   const sorted = [...completedScores].sort((a, b) => b.score - a.score);
   const top = sorted[0] ?? scores[0];
   const low = sorted[sorted.length - 1] ?? scores[scores.length - 1];
   const topBand = getScoreBand(top.score);
   const lowBand = getScoreBand(low.score);
-  const pattern = summaryPatterns[`${top.key}:${low.key}`];
-  const text =
-    pattern
-      ? `${pattern.text}你的最高维度是“${top.name}”，最低维度是“${low.name}”，这个组合更适合作为行动线索，而不是固定标签。`
-      : topBand.id === "balanced" && lowBand.id === "balanced"
-      ? "你的五维结果整体集中在中段，说明当前画像更像情境型：不同任务、关系和压力状态下可能呈现不同侧面。"
-      : `你的当前画像以“${top.name}”最突出，属于“${topBand.label}”；“${low.name}”相对保守，属于“${lowBand.label}”。这些结果更适合作为自我观察线索，而不是固定标签。`;
+  const pattern = assessment.summaryPatterns?.[`${top.key}:${low.key}`];
 
   return {
     top,
     low,
-    text,
-    pattern: pattern?.title ?? "五维观察型",
+    text: assessment.buildSummaryText({ top, low, topBand, lowBand, pattern }),
+    pattern: pattern?.title ?? assessment.neutralPatternTitle,
   };
 }

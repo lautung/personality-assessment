@@ -5,13 +5,13 @@ import { getTraitAdvice } from "../utils/scoring.js";
 import AnimatedNumber from "./AnimatedNumber.jsx";
 import RadarChart from "./RadarChart.jsx";
 
-export default function ResultView({ answers, scores, summary, onReset, reduceMotion }) {
+export default function ResultView({ assessment, answers, scores, summary, onReset, reduceMotion }) {
   const [copyStatus, setCopyStatus] = useState("");
-  const reportText = useMemo(() => buildTextReport({ answers, scores, summary }), [answers, scores, summary]);
-  const answerRows = useMemo(() => getAnswerReviewRows(answers), [answers]);
+  const reportText = useMemo(() => buildTextReport({ assessment, answers, scores, summary }), [assessment, answers, scores, summary]);
+  const answerRows = useMemo(() => getAnswerReviewRows(assessment, answers), [assessment, answers]);
 
   function handleDownload() {
-    downloadTextReport(reportText);
+    downloadTextReport(reportText, `${assessment.id}-report.txt`);
   }
 
   async function handleCopy() {
@@ -25,29 +25,27 @@ export default function ResultView({ answers, scores, summary, onReset, reduceMo
       <div className="result-hero reveal-item" style={{ "--reveal-index": 0 }}>
         <div>
           <span className="section-kicker">评估结果</span>
-          <h1>你的五维人格画像</h1>
+          <h1>{assessment.resultTitle}</h1>
           <p>{summary.text}</p>
-          <p className="result-context">
-            本测评每个维度由 4 道题构成，适合做自我探索和复盘；分数接近中段时代表倾向不明显，不建议过度解读。
-          </p>
+          <p className="result-context">{assessment.resultContext}</p>
         </div>
         <CheckCircle2 size={42} aria-hidden="true" />
       </div>
 
       <div className="result-grid">
         <div className="result-radar panel reveal-item" style={{ "--reveal-index": 1 }}>
-          <RadarChart scores={scores} />
+          <RadarChart scores={scores} ariaLabel={assessment.radarLabel} />
         </div>
 
         <div className="summary-cards">
           <article className="panel summary-card reveal-item" style={{ "--reveal-index": 2 }}>
-            <span>最高维度</span>
+            <span>{assessment.topLabel}</span>
             <strong>{summary.top.name}</strong>
             <em>{summary.top.band.label}</em>
             <p>{getTraitAdvice(summary.top)}</p>
           </article>
           <article className="panel summary-card reveal-item" style={{ "--reveal-index": 3 }}>
-            <span>可发展维度</span>
+            <span>{assessment.lowLabel}</span>
             <strong>{summary.low.name}</strong>
             <em>{summary.low.band.label}</em>
             <p>{getTraitAdvice(summary.low)}</p>
@@ -109,7 +107,7 @@ export default function ResultView({ answers, scores, summary, onReset, reduceMo
 
       <details className="answer-review panel reveal-item" style={{ "--reveal-index": 10 }}>
         <summary>
-          <span>答案回看</span>
+          <span>{assessment.answerReviewTitle}</span>
           <em>{answerRows.length} 道题已记录</em>
         </summary>
         <div className="answer-review-scroll">

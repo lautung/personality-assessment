@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { ArrowLeft, ArrowRight, Bookmark, Lock } from "lucide-react";
-import { answerOptions, questions, traits } from "../data/assessment.js";
+import { answerOptions } from "../data/assessment.js";
 
 export default function QuestionPanel({
+  assessment,
   currentQuestionIndex,
   motionDirection,
   answer,
@@ -13,10 +14,10 @@ export default function QuestionPanel({
   canPrevious,
   completion,
 }) {
-  const question = questions[currentQuestionIndex];
-  const trait = traits[question.trait];
+  const question = assessment.questions[currentQuestionIndex];
+  const trait = assessment.traits[question.trait];
   const selected = Boolean(answer);
-  const isLast = currentQuestionIndex === questions.length - 1;
+  const isLast = currentQuestionIndex === assessment.questions.length - 1;
   const stageClass = `question-stage question-stage-${motionDirection}`;
   const optionRefs = useRef([]);
 
@@ -51,7 +52,7 @@ export default function QuestionPanel({
           <div>
             <span>{trait.name}</span>
             <strong>
-              第 {currentQuestionIndex + 1} 题 / 共 {questions.length} 题
+              第 {currentQuestionIndex + 1} 题 / 共 {assessment.questions.length} 题
             </strong>
           </div>
           <div className="mini-progress">

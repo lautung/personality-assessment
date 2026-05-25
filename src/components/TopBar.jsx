@@ -14,6 +14,7 @@ export default function TopBar({
   onSwitchProfile,
   onAddProfile,
   onRemoveProfile,
+  assessment,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -35,6 +36,7 @@ export default function TopBar({
       onRemove={onRemoveProfile}
     />
   );
+
   const renderUtilityControls = () => (
     <>
       <span className="privacy-chip">
@@ -53,7 +55,7 @@ export default function TopBar({
         </span>
         <div>
           <strong>人格评估</strong>
-          <span>五维自我探索</span>
+          <span>{assessment.brandSubtitle}</span>
         </div>
       </div>
 

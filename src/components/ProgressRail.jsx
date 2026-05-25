@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, ChevronDown, Circle, Compass, Heart, RotateCcw, ShieldCheck, Target, Users } from "lucide-react";
-import { questions, traitOrder, traits } from "../data/assessment.js";
+import {
+  BriefcaseBusiness,
+  CheckCircle2,
+  ChevronDown,
+  Circle,
+  Compass,
+  Heart,
+  Megaphone,
+  RotateCcw,
+  ShieldCheck,
+  Target,
+  Users,
+} from "lucide-react";
+import { getQuestionCountByTrait } from "../data/assessment.js";
 import AnimatedNumber from "./AnimatedNumber.jsx";
 
 const traitIcons = {
@@ -9,12 +21,17 @@ const traitIcons = {
   social: Users,
   empathy: Heart,
   resilience: ShieldCheck,
+  dominance: Target,
+  influence: Megaphone,
+  steadiness: Heart,
+  conscientiousness: BriefcaseBusiness,
 };
 
-export default function ProgressRail({ answers, currentQuestionIndex, onJump, completion, reduceMotion, onClear }) {
+export default function ProgressRail({ assessment, answers, currentQuestionIndex, onJump, completion, reduceMotion, onClear }) {
   const [detailsOpen, setDetailsOpen] = useState(true);
-  const firstUnansweredIndex = questions.findIndex((question) => !answers[question.id]);
-  const maxReachableIndex = firstUnansweredIndex === -1 ? questions.length - 1 : firstUnansweredIndex;
+  const firstUnansweredIndex = assessment.questions.findIndex((question) => !answers[question.id]);
+  const maxReachableIndex = firstUnansweredIndex === -1 ? assessment.questions.length - 1 : firstUnansweredIndex;
+  const questionCountByTrait = getQuestionCountByTrait(assessment);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 860px)");
@@ -43,7 +60,9 @@ export default function ProgressRail({ answers, currentQuestionIndex, onJump, co
       >
         <span style={{ width: `${completion.percent}%` }} />
       </div>
-      <p>共 {completion.totalCount} 题，预计 5-8 分钟。所有答案仅保存在当前浏览器。</p>
+      <p>
+        共 {completion.totalCount} 题，{assessment.estimatedTime}。{assessment.progressSummary}
+      </p>
       {completion.answeredCount > 0 ? (
         <button type="button" className="clear-progress-button" onClick={onClear}>
           <RotateCcw size={15} aria-hidden="true" />
@@ -64,13 +83,14 @@ export default function ProgressRail({ answers, currentQuestionIndex, onJump, co
 
         <div className="progress-detail-content" hidden={!detailsOpen}>
           <div className="trait-steps">
-            {traitOrder.map((traitKey, index) => {
-              const trait = traits[traitKey];
-              const Icon = traitIcons[traitKey];
-              const traitQuestions = questions.filter((question) => question.trait === traitKey);
+            {assessment.traitOrder.map((traitKey, index) => {
+              const trait = assessment.traits[traitKey];
+              const Icon = traitIcons[traitKey] ?? Circle;
+              const traitQuestions = assessment.questions.filter((question) => question.trait === traitKey);
               const answeredCount = traitQuestions.filter((question) => answers[question.id]).length;
-              const active = questions[currentQuestionIndex].trait === traitKey;
+              const active = assessment.questions[currentQuestionIndex]?.trait === traitKey;
               const complete = answeredCount === traitQuestions.length;
+              const firstIndex = assessment.questions.findIndex((question) => question.trait === traitKey);
 
               return (
                 <button
@@ -78,7 +98,7 @@ export default function ProgressRail({ answers, currentQuestionIndex, onJump, co
                   type="button"
                   className={["trait-step", active ? "active" : "", complete ? "complete" : ""].filter(Boolean).join(" ")}
                   style={{ "--trait-color": `var(${trait.colorVar})` }}
-                  onClick={() => onJump(index * 4)}
+                  onClick={() => onJump(firstIndex)}
                   aria-current={active ? "step" : undefined}
                 >
                   <span className="step-number">{index + 1}</span>
@@ -87,7 +107,7 @@ export default function ProgressRail({ answers, currentQuestionIndex, onJump, co
                   </span>
                   <span>
                     <strong>{trait.name}</strong>
-                    <em>{complete ? "已完成" : active ? "正在评估" : `${answeredCount}/4`}</em>
+                    <em>{complete ? "已完成" : active ? "正在评估" : `${answeredCount}/${questionCountByTrait[traitKey]}`}</em>
                   </span>
                 </button>
               );
@@ -95,7 +115,7 @@ export default function ProgressRail({ answers, currentQuestionIndex, onJump, co
           </div>
 
           <div className="question-dots" aria-label="题目导航">
-            {questions.map((question, index) => {
+            {assessment.questions.map((question, index) => {
               const answered = Boolean(answers[question.id]);
               const current = index === currentQuestionIndex;
               const disabled = index > maxReachableIndex && !answered;
