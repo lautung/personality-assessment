@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, relative } from "node:path";
 
 const checkedExtensions = new Set([".css", ".html", ".js", ".jsx", ".json", ".md", ".svg"]);
-const ignoredDirectories = new Set([".git", ".vercel", "dist", "node_modules"]);
+const ignoredDirectories = new Set([".git", ".next", ".vercel", "dist", "node_modules", "out"]);
 const ignoredFiles = new Set(["package-lock.json"]);
 
 function* walk(directory) {

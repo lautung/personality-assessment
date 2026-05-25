@@ -3,3 +3,5 @@ dist/
 .vercel/
 npm-debug.log*
 output/
+.next/
+out/
