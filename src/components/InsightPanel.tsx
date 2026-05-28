@@ -1,6 +1,6 @@
-import { Activity, BarChart3 } from "lucide-react";
-import AnimatedNumber from "./AnimatedNumber.jsx";
-import RadarChart from "./RadarChart.jsx";
+﻿import { Activity, BarChart3 } from "lucide-react";
+import AnimatedNumber from "./AnimatedNumber.tsx";
+import RadarChart from "./RadarChart.tsx";
 
 export default function InsightPanel({ assessment, scores, currentQuestionIndex, completion, reduceMotion }) {
   const currentQuestion = assessment.questions[currentQuestionIndex];

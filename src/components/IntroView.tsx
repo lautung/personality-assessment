@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { ArrowRight, Lock, Plus, UserRound, UsersRound } from "lucide-react";
-import { buildAssessmentSession } from "../data/assessment.js";
-import { getCompletion } from "../utils/scoring.js";
-import { defaultProfileName, getProfileAssessmentState } from "../utils/profiles.js";
+import { buildAssessmentSession } from "../data/assessment.ts";
+import { getCompletion } from "../utils/scoring.ts";
+import { defaultProfileName, getProfileAssessmentState } from "../utils/profiles.ts";
 
 export default function IntroView({
   profiles,

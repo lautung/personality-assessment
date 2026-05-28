@@ -1,6 +1,6 @@
-import { useRef } from "react";
+﻿import { useRef } from "react";
 import { ArrowLeft, ArrowRight, Bookmark, Lock } from "lucide-react";
-import { answerOptions } from "../data/assessment.js";
+import { answerOptions } from "../data/assessment.ts";
 
 export default function QuestionPanel({
   assessment,

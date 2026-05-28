@@ -1,4 +1,4 @@
-import ClientApp from "./client-app.jsx";
+﻿import ClientApp from "./client-app.tsx";
 
 export default function Page() {
   return <ClientApp />;

@@ -5,3 +5,4 @@ npm-debug.log*
 output/
 .next/
 out/
+*.tsbuildinfo

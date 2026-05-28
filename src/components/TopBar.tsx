@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { House, Menu, ShieldCheck, Sparkles, X } from "lucide-react";
-import ThemeSwitcher from "./ThemeSwitcher.jsx";
-import AnimatedNumber from "./AnimatedNumber.jsx";
-import ProfileSwitcher from "./ProfileSwitcher.jsx";
+import ThemeSwitcher from "./ThemeSwitcher.tsx";
+import AnimatedNumber from "./AnimatedNumber.tsx";
+import ProfileSwitcher from "./ProfileSwitcher.tsx";
 
 export default function TopBar({
   themeId,

@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { CheckCircle2, ClipboardCopy, Download, RotateCcw } from "lucide-react";
-import { buildTextReport, copyTextReport, downloadTextReport, getAnswerReviewRows } from "../utils/report.js";
-import { getTraitAdvice } from "../utils/scoring.js";
-import AnimatedNumber from "./AnimatedNumber.jsx";
-import RadarChart from "./RadarChart.jsx";
+import { buildTextReport, copyTextReport, downloadTextReport, getAnswerReviewRows } from "../utils/report.ts";
+import { getTraitAdvice } from "../utils/scoring.ts";
+import AnimatedNumber from "./AnimatedNumber.tsx";
+import RadarChart from "./RadarChart.tsx";
 
 export default function ResultView({ assessment, answers, scores, summary, onReset, reduceMotion }) {
   const [copyStatus, setCopyStatus] = useState("");

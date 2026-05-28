@@ -1,4 +1,4 @@
-import { Plus, Trash2, UserRound } from "lucide-react";
+﻿import { Plus, Trash2, UserRound } from "lucide-react";
 
 export default function ProfileSwitcher({ profiles, activeProfileId, onSwitch, onAdd, onRemove }) {
   const activeProfile = profiles.find((profile) => profile.id === activeProfileId) ?? profiles[0];

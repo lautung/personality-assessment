@@ -1,8 +1,8 @@
-import assert from "node:assert/strict";
+﻿import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { answerOptions, getAssessmentDefinition } from "../src/data/assessment.js";
-import { calculateScores, getSummary } from "../src/utils/scoring.js";
-import { buildTextReport, copyTextReport, getAnswerReviewRows } from "../src/utils/report.js";
+import { answerOptions, getAssessmentDefinition } from "../src/data/assessment.ts";
+import { calculateScores, getSummary } from "../src/utils/scoring.ts";
+import { buildTextReport, copyTextReport, getAnswerReviewRows } from "../src/utils/report.ts";
 
 const fiveDim = getAssessmentDefinition("five-dim");
 const disc = getAssessmentDefinition("disc");

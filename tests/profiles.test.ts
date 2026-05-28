@@ -1,6 +1,6 @@
-import assert from "node:assert/strict";
+﻿import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getDefaultQuestionIds } from "../src/data/assessment.js";
+import { getDefaultQuestionIds } from "../src/data/assessment.ts";
 import {
   addProfile,
   createProfile,
@@ -11,7 +11,7 @@ import {
   setActiveAssessment,
   updateActiveProfile,
   updateActiveProfileAssessment,
-} from "../src/utils/profiles.js";
+} from "../src/utils/profiles.ts";
 
 describe("profile storage helpers", () => {
   it("creates a default local profile state", () => {

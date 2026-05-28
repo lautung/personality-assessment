@@ -1,5 +1,5 @@
-import { Moon, Palette, Sun } from "lucide-react";
-import { themes } from "../data/themes.js";
+﻿import { Moon, Palette, Sun } from "lucide-react";
+import { themes } from "../data/themes.ts";
 
 const themeIcons = {
   mist: Sun,

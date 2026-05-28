@@ -1,6 +1,6 @@
-import assert from "node:assert/strict";
+﻿import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getAssessmentDefinition } from "../src/data/assessment.js";
+import { getAssessmentDefinition } from "../src/data/assessment.ts";
 import {
   calculateScores,
   getCompletion,
@@ -8,7 +8,7 @@ import {
   getScoreBand,
   getSummary,
   getTraitAdvice,
-} from "../src/utils/scoring.js";
+} from "../src/utils/scoring.ts";
 
 const fiveDim = getAssessmentDefinition("five-dim");
 const disc = getAssessmentDefinition("disc");

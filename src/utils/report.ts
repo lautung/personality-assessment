@@ -1,5 +1,5 @@
-import { answerOptions } from "../data/assessment.js";
-import { getTraitAdvice } from "./scoring.js";
+﻿import { answerOptions } from "../data/assessment.ts";
+import { getTraitAdvice } from "./scoring.ts";
 
 function getAnswerLabel(value) {
   return answerOptions.find((option) => option.value === value)?.label ?? "未作答";
@@ -65,7 +65,7 @@ export function buildTextReport({ assessment, answers, scores, summary }) {
   ].join("\n");
 }
 
-export async function copyTextReport(reportText, clipboard = navigator.clipboard) {
+export async function copyTextReport(reportText, clipboard: Pick<Clipboard, "writeText"> | null | undefined = navigator.clipboard) {
   if (!clipboard?.writeText) {
     return {
       ok: false,
