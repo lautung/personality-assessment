@@ -1,4 +1,4 @@
-const scoreBands = [
+﻿const scoreBands = [
   {
     id: "very-low",
     min: 0,

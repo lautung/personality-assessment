@@ -6,14 +6,22 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "test": "node --test",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
     "lint": "node scripts/check-source.js",
     "format": "node scripts/format-source.js"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
     "lucide-react": "^0.468.0",
-    "next": "^16.1.6"
+    "next": "^16.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3"
   }
 }

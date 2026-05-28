@@ -1,20 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import TopBar from "./components/TopBar.jsx";
-import ProgressRail from "./components/ProgressRail.jsx";
-import QuestionPanel from "./components/QuestionPanel.jsx";
-import InsightPanel from "./components/InsightPanel.jsx";
-import ResultView from "./components/ResultView.jsx";
-import IntroView from "./components/IntroView.jsx";
-import ConfirmDialog from "./components/ConfirmDialog.jsx";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
+import TopBar from "./components/TopBar.tsx";
+import ProgressRail from "./components/ProgressRail.tsx";
+import QuestionPanel from "./components/QuestionPanel.tsx";
+import InsightPanel from "./components/InsightPanel.tsx";
+import ResultView from "./components/ResultView.tsx";
+import IntroView from "./components/IntroView.tsx";
+import ConfirmDialog from "./components/ConfirmDialog.tsx";
 import {
   assessmentList,
   buildAssessmentSession,
   createQuestionSetIds,
   defaultAssessmentId,
   getAssessmentDefinition,
-} from "./data/assessment.js";
-import { defaultThemeId, isValidTheme } from "./data/themes.js";
-import { calculateScores, getCompletion, getFirstUnansweredIndex, getSummary } from "./utils/scoring.js";
+} from "./data/assessment.ts";
+import { defaultThemeId, isValidTheme } from "./data/themes.ts";
+import { calculateScores, getCompletion, getFirstUnansweredIndex, getSummary } from "./utils/scoring.ts";
 import {
   addProfile,
   createProfilesState,
@@ -25,14 +25,22 @@ import {
   setActiveProfile,
   updateActiveProfile,
   updateActiveProfileAssessment,
-} from "./utils/profiles.js";
-import usePrefersReducedMotion from "./hooks/usePrefersReducedMotion.js";
+} from "./utils/profiles.ts";
+import usePrefersReducedMotion from "./hooks/usePrefersReducedMotion.ts";
 
 const storageKey = "personality-assessment-theme";
 const profileStorageKey = "personality-assessment-profiles-v1";
 const legacyAnswerStorageKey = "personality-assessment-answers";
 const legacyIndexStorageKey = "personality-assessment-current-index";
 const autoAdvanceDelay = 650;
+
+type ConfirmDialogState = {
+  open: boolean;
+  title?: string;
+  message?: string;
+  confirmLabel?: string;
+  onConfirm?: () => void;
+};
 
 function getInitialTheme() {
   const stored = window.localStorage.getItem(storageKey);
@@ -89,7 +97,7 @@ export default function App() {
   const autoAdvanceTimerRef = useRef(null);
   const saveTimerRef = useRef(null);
   const profilesStateRef = useRef(profilesState);
-  const [confirmDialog, setConfirmDialog] = useState({ open: false });
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({ open: false });
   const prefersReducedMotion = usePrefersReducedMotion();
   profilesStateRef.current = profilesState;
   const activeProfile =
@@ -345,7 +353,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "instant" : "smooth" });
   }
 
-  function showConfirm({ title, message, confirmLabel, onConfirm }) {
+  function showConfirm({ title, message, confirmLabel, onConfirm }: Omit<ConfirmDialogState, "open">) {
     setConfirmDialog({ open: true, title, message, confirmLabel, onConfirm });
   }
 

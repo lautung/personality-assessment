@@ -1,11 +1,11 @@
-import assert from "node:assert/strict";
+﻿import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   buildAssessmentSession,
   createQuestionSetIds,
   getAssessmentDefinition,
   getDefaultQuestionIds,
-} from "../src/data/assessment.js";
+} from "../src/data/assessment.ts";
 
 function createDeterministicRandom(values) {
   let index = 0;

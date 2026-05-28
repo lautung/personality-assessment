@@ -1,4 +1,4 @@
-function polarPoint(index, total, value, chartSize) {
+﻿function polarPoint(index, total, value, chartSize) {
   const center = chartSize / 2;
   const radius = (chartSize * 0.38 * value) / 100;
   const angle = -Math.PI / 2 + (index * Math.PI * 2) / total;

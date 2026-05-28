@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   BriefcaseBusiness,
   CheckCircle2,
@@ -12,8 +12,8 @@ import {
   Target,
   Users,
 } from "lucide-react";
-import { getQuestionCountByTrait } from "../data/assessment.js";
-import AnimatedNumber from "./AnimatedNumber.jsx";
+import { getQuestionCountByTrait } from "../data/assessment.ts";
+import AnimatedNumber from "./AnimatedNumber.tsx";
 
 const traitIcons = {
   openness: Compass,

@@ -1,4 +1,4 @@
-export const defaultAssessmentId = "five-dim";
+﻿export const defaultAssessmentId = "five-dim";
 
 export const answerOptions = [
   { value: 1, label: "非常不符合" },
@@ -405,7 +405,7 @@ function normalizeQuestionIdsInternal(assessment, questionIds) {
 
   if (uniqueIds.length !== getExpectedQuestionCount(assessment)) return assessment.defaultQuestionIds;
 
-  const selectedQuestions = uniqueIds.map((questionId) => questionIndex.get(questionId));
+  const selectedQuestions = uniqueIds.map((questionId) => questionIndex.get(questionId) as { trait: string; reverse: boolean });
   const countByTrait = getQuestionCountByTraitFromList(assessment.traitOrder, selectedQuestions);
   const reverseCountByTrait = assessment.traitOrder.reduce((counts, traitKey) => {
     counts[traitKey] = selectedQuestions.filter((question) => question.trait === traitKey && question.reverse).length;

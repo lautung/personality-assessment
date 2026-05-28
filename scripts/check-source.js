@@ -1,7 +1,7 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
+﻿import { readdirSync, readFileSync, statSync } from "node:fs";
 import { extname, join, relative } from "node:path";
 
-const checkedExtensions = new Set([".css", ".html", ".js", ".jsx", ".json", ".md", ".svg"]);
+const checkedExtensions = new Set([".css", ".html", ".ts", ".tsx", ".json", ".md", ".svg"]);
 const ignoredDirectories = new Set([".git", ".next", ".vercel", "dist", "node_modules", "out"]);
 const ignoredFiles = new Set(["package-lock.json"]);
 

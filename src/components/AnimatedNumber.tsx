@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 
 export default function AnimatedNumber({ value, suffix = "", duration = 420, disabled = false }) {
   const previousValue = useRef(Number(value) || 0);
